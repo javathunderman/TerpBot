@@ -1,6 +1,7 @@
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -11,7 +12,9 @@ logger.level = 'debug';
 // Initialize Discord Bot
 var bot = new Discord.Client({
     token: auth.token,
-    autorun: true
+    autorun: true,
+    guild: `{719560990550786110}`
+
 });
 
 bot.on('ready', function (evt) {
@@ -20,10 +23,12 @@ bot.on('ready', function (evt) {
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
-bot.on('message', function (user, userID, channelID, message, evt) {
-    // Listens for messages that startwith " ' "
 
-    if (message.substring(0, 1) == '\'') {
+
+bot.on('message', function (user, userID, channelID, message, evt) {
+    // Listens for messages that startwith "!"
+
+    if (message.substring(0, 1) == '!') {
         var args = message.substring(1).split(' ');
         var cmd = args[0];
 
@@ -40,6 +45,17 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 bot.sendMessage({
                     to: channelID,
                     message: "^"
+                });
+                break;
+            case 'membercount':
+                bot.sendMessage({
+                    to: channelID,
+                    message: `${guild.memberCount}`
+                });
+            case 'guildfind':
+                bot.sendMessage({
+                    to: channelID,
+                    message: `${guild}`
                 });
                 break;
         }
