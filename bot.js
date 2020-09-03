@@ -1,15 +1,10 @@
-var Discord = require('discord.io');
-var logger = require('winston');
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const { prefix } = require('./package.json');
+
 var auth = require('./auth.json');
+client.login(auth.token);
 
-// Configure logger settings
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
-});
-
-logger.level = 'debug';
-// Initialize Discord Bot
 var bot = new Discord.Client({
     token: auth.token,
     autorun: true,
@@ -17,47 +12,44 @@ var bot = new Discord.Client({
 
 });
 
-bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
-});
-
-
-
-bot.on('message', function (user, userID, channelID, message, evt) {
-    // Listens for messages that startwith "!"
-
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
-
-        args = args.splice(1);
-        switch (cmd) {
-            // !ping
-            case 'ping':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Pong!'
-                });
-                break;
-            case '^':
-                bot.sendMessage({
-                    to: channelID,
-                    message: "^"
-                });
-                break;
-            case 'membercount':
-                bot.sendMessage({
-                    to: channelID,
-                    message: `${guild.memberCount}`
-                });
-            case 'guildfind':
-                bot.sendMessage({
-                    to: channelID,
-                    message: `${guild}`
-                });
-                break;
+client.once('ready', () => {
+    client.on('message', message => {
+        if (message.content === '!ping') {
+            message.channel.send('Pong.');
+        } else if (message.content === `${prefix}links`) {
+            message.channel.send("Testudo: https://testudo.umd.edu/ \nELMS: https://elms.umd.edu/ \nCMSC131 Homepage: http://www.cs.umd.edu/class/fall2020/cmsc131-010X-030X/index.shtml ");
+        } else if (message.content === `${prefix}server`) {
+            message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+        } else if (message.content === '^') {
+            message.channel.send('^^^');
+        } else if (message.content.includes('rocky') || message.content.includes('Rocky')) {
+            message.channel.send('Which one?');
+        } else if (message.content === `${prefix}login`) {
+            message.channel.send("Username: cmsc131 \nPassword: sprcoredump");
+        } else if (message.content.includes('is a nerd')) {
+            message.channel.send("no u");
+        } else if (message.content.includes('heck')) {
+            message.channel.send("hecc");
+        } else if (message.content.includes('terpbot is dumb')) {
+            message.channel.send('NO U');
+        } else if (message.content.includes('terpbot is not dumb')) {
+            message.channel.send('damn straight');
+        } else if (message.content.includes('trans')) {
+            message.channel.send('Trans rights!');
+        } else if (message.content.includes('hw') || message.content.includes("HW") || message.content.includes('homework') || message.content.includes('Homework')) {
+            if (message.content.includes('finished')) {
+                message.channel.send("congrats <3");
+            } else {
+                message.channel.send('**DO YOUR HOMEWORK CHILD**');
+            }
+        } else if(message.content.includes('shut up')) {
+            message.channel.send("make pizza not war children");
         }
-    }
+
+    });
+
 });
+
+
+
+
