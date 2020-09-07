@@ -15,8 +15,10 @@ var bot = new Discord.Client({
 
 client.once('ready', () => {
     client.on('message', message => {
-        const roleList = ['league', 'rocket', 'overwatch', 'gaming', 'developer', 'cs-meetup', 'anime', 'cmsc131', 'cmsc132', 'cmsc216', 'math140', 'math141'];
-        const roleListID = ['751507896541380670', '751507831554965576', '751507860499857580', '751479288502681664', '752585354560798800', '752585329789108334', '749749498087211089', '752616700066791545','752616781146882089', '752616781146882089', '752642492066824222', '752617288707997788', '752617318114263160'];
+
+        // Kind of a jank fix, had to switch the role names around so that CMSC216 would stop being given when MATH140 was wanted.
+        const roleList = ['league', 'rocket', 'overwatch', 'gaming', 'developer', 'cs-meetup', 'anime', 'cmsc131', 'cmsc132', 'cmsc216', 'math140', 'math141', 'math240', 'cmsc250', 'math241', 'stat400', 'cmsc351'];
+        const roleListID = ['751507896541380670', '751507831554965576', '751507860499857580', '751479288502681664', '752585354560798800', '752585329789108334', '749749498087211089', '752616700066791545','752616781146882089', '752616781146882089', '752642492066824222', '752617288707997788', '752617318114263160', '752648351098601524','752647619137896518', '752648383218450562', '752648404118536292', '752647846880215220'];
 
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
