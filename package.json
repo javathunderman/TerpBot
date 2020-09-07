@@ -1,6 +1,6 @@
 {
     "name": "terpbot",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Discord bot for the University of Maryland's CMSC Discord",
     "main": "bot.js",
     "author": "Kali Elaina",
