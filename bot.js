@@ -1,7 +1,11 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { prefix } = require('./package.json');
+const bent = require('bent');
+const getJSON = bent('json');
 
+const courseEndpoint = "https://api.umd.io/v1/courses/";
+const testudoUrl = "https://app.testudo.umd.edu/soc/" 
 var auth = require('./auth.json');
 client.login(auth.token);
 
@@ -14,6 +18,7 @@ var bot = new Discord.Client({
 });
 
 client.once('ready', () => {
+    console.log("Authenticated w/ server");
     client.on('message', message => {
 
         // kind of a jank fix, had to switch the role names around so that CMSC216 would stop being given when MATH140 was wanted.
@@ -89,15 +94,37 @@ client.once('ready', () => {
                 } catch (err) {
                     return;
                 }
-            }
+            } else if (command === 'course' && args.length !== 0) {
+                var courseResp = getJSON(courseEndpoint + "/" + args[0]).then(
+                    r => {
+                        if (!r[0]['error_code']) {
+                            const embed = new Discord.MessageEmbed()
+                            .setTitle(r[0]['course_id'] + ": " + r[0]['name'])
+                            .setColor("#E03a3e")
+                            .setURL(testudoUrl + r[0]['semester']+"/"+r[0]['dept_id']+"/"+r[0]['course_id'])
+                            .addFields(
+                                { name: "Description", value: r[0]['description'] ? r[0]['description'] : "No provided description" },
+                                { name: "Department", value: r[0]['department'], inline: false },
+                                { name: "Prerequisites", value: r[0]['relationships']['prereqs'], inline: false },
+                                { name: "Course ID", value: r[0]['course_id'], inline: true },
+                                { name: "Credits", value: r[0]['credits'], inline: true }
+                            );
+                            message.channel.send(embed);
+                        }
+                        else if (r[0]['error_code'] == 400) {
+                            message.channel.send("Invalid format: course IDs take the form [major code][course number] (for example: CMSC132).");
+                        }
+                        else if (r[0]['error_code'] == 404) {
+                            message.channel.send("No such course");
+                        }
+                    }
+                );
+            } 
         } catch (err) {
+            console.err(error);
             message.channel.send("Error, please try again");
         }
-
+        return;
     });
 
 });
-
-
-
-
