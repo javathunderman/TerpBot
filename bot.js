@@ -97,7 +97,7 @@ client.once('ready', () => {
             } else if (command === 'course' && args.length !== 0) {
                 var courseResp = getJSON(courseEndpoint + "/" + args[0]).then(
                     r => {
-                        if (!r[0]['error_code']) {
+                        if (!r['error_code']) {
                             const embed = new Discord.MessageEmbed()
                             .setTitle(r[0]['course_id'] + ": " + r[0]['name'])
                             .setColor("#E03a3e")
@@ -105,17 +105,18 @@ client.once('ready', () => {
                             .addFields(
                                 { name: "Description", value: r[0]['description'] ? r[0]['description'] : "No provided description" },
                                 { name: "Department", value: r[0]['department'], inline: false },
-                                { name: "Prerequisites", value: r[0]['relationships']['prereqs'], inline: false },
+                                { name: "Prerequisites", value: r[0]['relationships']['prereqs'] ? r[0]['relationships']['prereqs'] : "None", inline: false },
+                                { name: "Corequisites", value: r[0]['coreqs'] ? r[0]['coreqs'] : "None", inline: false},
                                 { name: "Course ID", value: r[0]['course_id'], inline: true },
                                 { name: "Credits", value: r[0]['credits'], inline: true }
                             );
                             message.channel.send(embed);
                         }
-                        else if (r[0]['error_code'] == 400) {
+                        else if (r['error_code'] == 400) {
                             message.channel.send("Invalid format: course IDs take the form [major code][course number] (for example: CMSC132).");
                         }
-                        else if (r[0]['error_code'] == 404) {
-                            message.channel.send("No such course");
+                        else if (r['error_code'] == 404) {
+                            message.channel.send("something else");
                         }
                     }
                 );
